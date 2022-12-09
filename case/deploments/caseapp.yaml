@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caseapp-deployment
+  labels:
+    app: caseapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: caseapp
+  template:
+    metadata:
+      labels:
+        app: caseapp
+    spec:
+      containers:
+        - name: caseapp
+          image: example-task:latest
+          ports:
+            - containerPort: 8080
+          env:
+            name: CONFIG_FILE_PATH
+              value: infrastructure/configs/stage/application.yml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: caseapp-service
+spec:
+  type: NodePort
+  selector:
+    app: caseapp
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30100
